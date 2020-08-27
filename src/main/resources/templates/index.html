@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Corona Virus Tracking</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Recent Day: <span th:text="${date}"></span></h1>
+        <h2>Summary Of Covid Situation In The World</h2>
+        <canvas id="myChart" height="100px" style="max-width: 1000px;"></canvas>
+        <script th:inline="javascript">
+            let ctx = document.getElementById("myChart").getContext('2d');
+            let NewConfirmed = /*[[${global.NewConfirmed}]]*/'0';
+            let TotalConfirmed = /*[[${global.TotalConfirmed}]]*/'0';
+            let NewDeaths = /*[[${global.NewDeaths}]]*/'0';
+            let TotalDeaths = /*[[${global.TotalDeaths}]]*/'0';
+            let NewRecovered = /*[[${global.NewRecovered}]]*/'0';
+            let TotalRecovered = /*[[${global.TotalRecovered}]]*/'0';
+            let myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ["NewConfirmed", "TotalConfirmed", "NewDeaths", "TotalDeaths", "NewRecovered", "TotalRecovered"],
+                    datasets: [{
+                        data: [NewConfirmed, TotalConfirmed, NewDeaths, TotalDeaths, NewRecovered, TotalRecovered],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Global Covid Data'
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+    </div>
+    <br>
+    <div class="container">
+        <h2>Summary Of Covid Situation In All Countries</h2>
+        <br>
+        <table class="table table-dark table-striped">
+            <thead>
+                <tr>
+                    <th>Country</th>
+                    <th>Country Code</th>
+                    <th>NewConfirmed</th>
+                    <th>TotalConfirmed</th>
+                    <th>NewDeaths</th>
+                    <th>TotalDeaths</th>
+                    <th>NewRecovered</th>
+                    <th>TotalRecovered</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="country : ${allCountries}">
+                    <td th:text="${country.Country}"></td>
+                    <td th:text="${country.CountryCode}"></td>
+                    <td th:text="${country.NewConfirmed}"></td>
+                    <td th:text="${country.TotalConfirmed}"></td>
+                    <td th:text="${country.NewDeaths}"></td>
+                    <td th:text="${country.TotalDeaths}"></td>
+                    <td th:text="${country.NewRecovered}"></td>
+                    <td th:text="${country.TotalRecovered}"></td>
+                </tr>
+            </tbody>
+        </table>
+        <div>
+            <ul th:if="${totalPage > 0}" class="pagination">
+                <li class="page-item" th:each="pageNumber : ${pageNumbers}">
+                    <a class="page-link" th:href="@{/(page=${pageNumber})}" th:text=${pageNumber}
+                        th:classappend="${pageNumber== currentpage + 1} ? active"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+
+</html>
